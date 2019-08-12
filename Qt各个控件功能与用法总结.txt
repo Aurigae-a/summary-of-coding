@@ -1,0 +1,329 @@
+Qt各个控件功能与用法总结
+
+QButtonGroup: 这是一个用来将当前窗口中的按钮进行分组的类
+	QButtonGroup();		无参数的构造函数
+
+	void addButton(QAbstractButton *p1, int i1);
+		把指针为p1的按钮放入到这个组中，它在这个组中的编号被设置为i1。
+
+	QAbstractButton* button(int id);
+		返回这个分组中编号是id的那个按钮的指针，否则则返回0.
+
+	void buttonClicked(int id);
+		信号。当这个分组中任意一个按钮被点击的时候，这个信号被释放，并将那个被点击按钮的编号赋给id
+		随信号一起传播。
+
+	一旦生成这个类，它默认的就是该类中所有的按钮是排他的，即这些按钮中只能同时选中一个。
+
+
+QCheckBox: Qt中的多选框的实现类
+	QCheckBox(); 		无参数构造函数
+
+	Qt::CheckState checkState();
+		返回的是当前这个多选框的状态。总共有三种状态，分别是：
+			Qt::Unchecked			未被选中
+			Qt::PartiallyChecked	部分选中
+			Qt::Checked 			被选中
+
+	void checkState(Qt::CheckState);
+		将当前这个多选框的状态设置为选中、部分选中或未选中。
+
+	bool isChecked();	判断当前这个多选框是否被选中。如果被选中，则返回true，否则则返回false。
+
+
+QDateTime: 用来获取系统当前时间
+	QDateTime* currentDateTime();	
+		静态函数
+		返回一个QDateTime对象的指针，这个对象中保存着当前时间的信息。
+
+	QString toString(QString f);
+		将当前QDateTime对象中所包含的当前时间以指定格式f的形式输出成一个字符串。
+		f格式的制定方法：
+			yyyy: 年		MM: 月	dd: 日 	hh: 小时		mm: 分钟		
+			ss: 秒		zzz: 毫秒 		ddd: 星期几
+			例如: "yyyyMMdd"
+
+
+QFile: 这个用来进行文件读写的类
+	QFile(String s1); 	创建一个以s1为文件路径的文件流。
+
+	bool open(QIODevice mode);
+		以指定的模式打开当前文件流所指定的文件。如果打开成功，返回true；如果没成功，返回false。文
+		件的模式有：
+			QIODevice::ReadOnly			以只读方式打开
+			QIODevice::WriteOnly		以只写方式打开
+			QIODevice::ReadWrite		以读写方式打开
+			QIODevice::Text 			以文本文件的形式打开
+			QIODevice::Unbuffered.		以无缓冲的形式打开，这样的话无法使用readline
+		不同的打开模式之间用 | 来分隔开。
+
+	qint64 readline(char[] c1, int i1);
+		读取文件的一整行，将其保存到char数组c1中，c1的长度由i1来标示。返回值是读取的这一行中包含多
+		少个字符。每行结尾处的回车\n也会被读取并保存到c1中，同时算一个字符。
+
+	bool atEnd(); 	返回是否已到达文件的结尾，如果到达，返回true；如果没到，返回false。
+
+	bool close(); 	关闭这个文件流
+
+
+QFileDialog: 用来进行路径询问的对话框。在打开或保存文件时，需要用户对文件路径进行指定的时候，可以
+				用这里面集成好的静态函数直接生成一个与平常使用类似的文件路径地址对话框。当然，这里
+				面也提供函数，可以自己定义地址对话框的布局。
+	QString getOpenFileName(QWidget* p, QString t, QString d, QString* f);
+		静态函数
+		自动生成并运行一个询问文件打开地址风格的对话框，它的父对象是指针p所制定的对象，它的标题是t
+		，它初始时候的路径是字符串d所指定的路径。当用户选中一个文件时，这个对话框会结束，然后返回
+		这个文件的路径的字符串。在显示的时候，它会根据过滤器f，让用户只能选择那些符合过滤器对文件
+		名要求的文件。
+		这个过滤器的写法是"Format name (*.*)"的形式，例如，"Image (*.jpg)"，这样，在执行过程
+		中，Image是用户对*.jpg格式起的名字，用户只能选择后缀为.jpg格式的文件。可以指定多种格式，
+		同一个名称下可以包括多种格式，它们之间用空格进行间隔，例如"Image (*.jpg *.png)"，也可
+		以指定多个名称，用两个分号进行间隔，例如"Music (*.mp3)" ;; "Matlab (*.m)"
+
+	QString getSaveFileName(QWidget* p, QString t, QString d, QString* f);
+		静态函数
+		自动生成并运行一个询问文件保存地址风格的对话框，它的形参列表的含义与函数getOpenFileName
+		相同。
+
+
+QGridLayout: 这是一个栅格布局用的控件
+	QGridLayout();	 	无参数的构造函数
+	
+	void addWidget(QWedgit* w, int i1, int i2, int i3, int i4);	
+		把指针为w的控件放到这个布局层中，起始行号i1，起始列号i2，所占行数i3，所占列数i4
+
+	在所有的控件都添加到这个总图层之后，还需要在想要放置这个图层的对话框中调用 
+		对话框指针->setLayout(该图层指针);
+	来完成放置。否则，在生成的对话框中看不到这个图层。
+
+
+QLineEdit: 这个是用来进行单行文本输入的控件类
+	QLineEdit();	 	无参数的构造函数
+
+	void setEnabled(boolean b1);
+		设置当前文本编辑框是否可以输入。若b1=true，则该文本编辑框可以进行输入；若b1=false，该文
+		本编辑框则被锁住，不可进行文本的输入。
+
+	void setText(QString s1);	将当前文本编辑框的内容设置为s1字符串的内容。
+
+	void text();	获取文本框中当前的内容。
+
+
+QMenu: Qt中的菜单
+	QMenu() 	 无参数的构造函数。
+
+	QAction* addAction(QString s1);
+		在当前这个菜单中加入一个动作。这个动作与QPushButton的作用类似，也是点击后会释放信号，与槽
+		函数连接来实现某种功能。这个动作按钮的标题是s1.一个QMenu中只能包含两种东西，一种是QAction
+		，另一种是其他的QMenu。
+
+	QMenu* addMenu(QString s1);
+		在当前这个菜单中加入一个子菜单，这个子菜单的标题是s1.
+
+	void addSeparator();
+		在当前菜单中划一条横线，用来分隔，以提高菜单的美感。
+
+
+QMessageBox: 这个使用来实现简单的弹出对话框以通知信息的类
+	int question(QWidget *p, QString s1, QString s2, int b1, int b2=0, int b3=0);
+		静态函数，要通过“类名::函数名”的方式进行调用。直接生成并弹出一个消息对话框。该消息对话框的
+		父对象是p，标题是s1，消息的内容是s2，它最多可以设置三个按钮，默认情况下，后两个按钮不设置
+		。可以用枚举的方式设定按钮里面的内容，枚举的种类如下：
+			QMessageBox::NoButton	没有按钮
+			QMessageBox::Ok
+			QMessageBox::Cancel		
+			QMessageBox::Yes
+			QMessageBox::No
+			QMessageBox::Abort
+			QMessageBox::Retry
+			QMessageBox::Ignore
+			QMessageBox::YesAll
+			QMessageBox::NoAll
+
+	int information(QWidget *p, QString s1, QString s2, int b1, int b2=0, int b3=0);
+		静态函数，它的执行机理与question完全一致，只不过它之中的图案Icon是信息类型的。
+
+	int warning(QWidget *p, QString s1, QString s2, int b1, int b2=0, int b3=0);
+		静态函数，它的执行机理与question完全一致，只不过它之中的图案Icon是警告类型的。
+
+	QMessageBox() 		无参数构造函数，生成一个空的消息对话框。
+
+	void setWindowTitle(QString str1); 	将当前消息对话框的标题设置为str1中的内容。
+
+	void setText(QString str1); 	将当前消息对话框中的提示内容设置为str1中的内容。
+
+	void setIcon(enum QMessageBox::Icon);
+		设置消息对话框中的图案的形状。可选的选项有：
+			QMessageBox::NoIcon 		没有图案
+			QMessageBox::question 		问题的图案
+			QMessageBox::Information 	信息的图案
+			QMessageBox::Warning		警告的图案
+			QMessageBox::Critical		重要的图案
+
+	QPushButton* addButton(QString s1, enum QMessageBox::ButtonRole);
+		在消息对话框中加入一个按钮，并返回这个按钮的指针。这个按钮以s1作为文字，它的类型由
+		QMessageBox::ButtonRole进行确定，常用的选项有：
+			QMessageBox::InvalidRole 	
+			QMessageBox::AcceptRole		
+			QMessageBox::RejectRole		
+			QMessageBox::ActionRole		
+		在同一个类型中，按钮的排列顺序由添加的先后顺序决定，不同的类型的按钮的排列顺序不确定。
+
+	void exec();	
+		运行这个消息对话框，这是一个模态对话框，当用户点击了其中的一个按钮后，对话框结束
+
+	QPushButton* clickedButton();
+		查看用户在这个消息对话框中点击的是哪个按钮，返回这个按钮的指针。
+
+
+QRadioButton: 这是实现单选按钮的类
+	QRadioButton();		无参数的构造函数
+
+	void setText(String s1); 将该选项的解释文本设置为s1
+
+	void setChecked(bool b1); 
+		若b1=true，则将该选项设置为选中状态；若b1=false，则将该选项设置为未选中状态。
+
+	bool isChecked();
+		若当前这个选项被选中，则返回true；若未被选中，则返回false。
+
+	在使用之前，所有的单选选项必须设置为彼此排他的，所以，最好使用之前将所有的单选选项放入到同一个
+	QButtonGroup之中，以保证排他性。
+
+
+QString: 这个类是Qt中的字符串
+	int lastIndexOf(char c1);	找出字符串中最后一次出现字符c1的位置（这个位置是从0开始的）。
+
+	QString mid(int i1);
+		截取字符串，返回的字符串以原字符串中位置为i1的字符为起始，一直到原字符串的结尾。
+
+	QString mid(int i1, int i2);
+		截取字符串，返回的字符串以原字符串中位置为i1的字符为起始，新的字符串的长度为i2。
+
+	void append(QString str2); 	拼接字符串，把字符串str2整体接在当前字符串的结尾处。
+
+
+QStringList: 这个类是Qt中的字符串序列
+	<< :与cout的用法类似，在'<<'后面接入相输入的QString字符串，以将它们串成字符串序列。
+
+
+QTableWidget: 这个类用来实现Qt中的表格
+	void horizontalHeader()->setVisible(bool b1);
+		设置表格的上表头是否可见，b1为true的时候上表头可见；b1为false的时候上表头不可见。用这个的时候必须要手动include QHeaderView这个头文件。
+
+	void verticalHeader()->setVisible(bool b1);
+		设置表格的左表头是否可见，b1为true的时候左表头可见；b1为false的时候左表头不可见。用这个的时候必须要手动include QHeaderView这个头文件。
+
+	void setHorizontalHeaderLabels(QStringList l1);
+		设置表格的上表头的文字。将字符串序列l1中的各个字符串依次放到上表头的各列上。
+
+	void setSelectionBehavior(enum SelectionBehavior);
+		设置表格的选择方式。当被鼠标点击的时候，是只选择一个单元格，还是选择一整行或一整列。可供选择
+		的选项有：
+			QAbstractItemView::SelectItems		只选择一个单元格
+			QAbstractItemView::SelectRows		选择一整行
+			QAbstractItemView::SelectColumns	选择一整列
+
+	void setSelectionMode(enum SelectionMode);
+		设置表格是否可以同时选中多个。可供选择的选项有：
+			QAbstractItemView::SingleSelection		每次只能选中一个单元格
+			QAbstractItemView::ContiguousSelection	按住Shift的时候可以多选
+			QAbstractItemView::ExtendedSelection	按住Ctrl和Shift的时候可以多选
+			QAbstractItemView::MultiSelection	当鼠标左键按中的时候，鼠标移动到的区域都被选中
+			QAbstractItemView::NoSelection			设置为无法选中任何单元格
+
+	void setEditTriggers(enum EditTrigger);
+		设置表格单元格是否可以直接进行编辑，可选的选项有：
+			QAbstractItemView::NoEditTriggers	永远都无法进行编辑
+			QAbstractItemView::CurrentChanged	当前选中的单元格发生变化时，进入编辑状态
+			QAbstractItemView::DoubleClicked	双击当前选中的单元格进入编辑状态
+			QAbstractItemView::SelectedClicked	单击当前选中的单元格进入编辑状态
+			QAbstractItemView::EditKeyPressed	
+										按会对表格进行编辑的键时候，选中的单元格进入编辑状态
+			QAbstractItemView::AnyKeyPressed	按任意键的时候，选中的单元格进入编辑状态
+			QAbstractItemView::AllEditTriggers	上述任一一种情况发生时，单元格进入编辑状态
+
+	void setItem(int i1, int i2, QTableWidgetItem* it);
+		把指针it所指向的单元格放置到当前表格的第i1行，第i2列
+
+	QTableWidgetItem* item(int i1, int i2);
+		搜索当前表格第i1行，第i2列的单元格，并返回这个单元格的指针
+
+	void resizeRowsToContents();	让表格的每一行自动调整宽度以适应表格中文字的内容
+
+	void resizeColumnsToContents();	让表格的每一列自动调整宽度以适应表格中文字的内容
+
+	int rowCount();		读取当前表格中总共有多少行。
+
+	void setRowCount(int i1); 设置表格的行数为i1.
+	
+	int rowCount();		读取当前表格中总共有多少列。
+
+	void setColumnCount(int i1); 设置表格的列数为i1.
+
+QTableWidgetItem: QTableWidget表格中的一个个的单元格
+	QTableWidgetItem();		无参数的构造函数
+
+	void setText(QString s1); 	将字符串s1中的内容设置为当前单元格的内容
+
+	void setTextColor(QColor(int r, int g, int b));
+		设置单元格的文字的颜色，这个颜色是用RGB表示的，r、g与b都是0～255的整数，分别表示这个颜色的
+		红、绿、蓝三原色的大小
+
+	void setBackgroundColor(QColor(int r, int g, int b));
+		设置单元格的背景的颜色，这个颜色是用RGB表示的，r、g与b都是0～255的整数，分别表示这个颜色的
+		红、绿、蓝三原色的大小
+
+
+QWidget: 这个是Qt控件的总类
+	void showMaximized();		全屏显示当前窗口。
+
+
+可直接使用的函数:
+	number2 qAbs(number1);	计算数值number的绝对值
+
+	number3 qMin(number1, number2); 	返回两个输入数值中较小的那一个
+
+	number3 qMax(number1, number2); 	返回两个输入数值中较大的那一个
+
+
+数组指针与指针数组: 
+	数组指针，是指向数组的指针，本质上是一个指针，这个指针指向了一个数组，它的声明方式是：
+		数组类型 (*指针变量名) [指向的数组的长度];
+		例如: int (*p) [10]; 就表示指针p指向的是一个长度为10的数组，这时候就可以用过用*(p+i)来
+			访问这个数组中的各个元素了。
+
+	指针数组，是一个数组，这个数组中的每一个元素都是一个指针，它的声明方式是：
+		作为数组元素的指针所指向的类型 *数组变量名 [数组的长度];
+		例如：int *p [10]; 这个表示p是一个长度为10的数组，这个数组中的每一个元素都是指向int类型
+			对象的指针，即int*。访问的时候，用p[i]来访问p数组中第i位所存的那个int类型的指针。
+
+
+Qt应用程序在windows环境下生成.exe文件及打包的方法:
+	1、在Qt Creator中，以Release的方式运行程序，这时它在指定的文件夹下自动的进行程序的编译和连接
+	，并生成一个.exe文件。但是这个可执行文件并不能直接运行，还需要做以下几步来让Qt帮助自动进行动态链接库和相关以来环境的配置。注意，这里是要以Release的方式运行，而不能以Debug的方式运行。
+
+	2、创建一个文件夹，作为将来程序包的根目录，然后再将刚才Release出来的.exe文件复制到这个文件夹下。只需要复制这个.exe文件即可。
+
+	3、打开Qt for Desktop这个程序，它是Qt自带的一个帮助实现以来环境配置的程序。这个程序打开后会
+	进入到一个类似于cmd的窗口，在这个窗口中用cd命令切换到刚才创建的那个根目录下，然后运行指令
+		windeployqt 文件名.exe 
+	这样Qt就会自动帮你把需要用到的动态链接库文件复制过来，将依赖环境设置好。这个时候，再双击 .exe
+	文件，就可以正常运行程序了。注意，必须要在Qt for Desktop这个程序下进行相关操作，而不能直接在
+	cmd窗口中进行操作。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
