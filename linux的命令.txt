@@ -1,1 +1,19 @@
+ps:查看当前的进程
+  a 显示现行终端机下的所有进程，包括其他用户的进程
+  u 以用户为主的格式来显示程序状况
 
+
+ls:显示当前文件夹下的文件
+  -a 显示当前文件夹下的所有文件
+  -d .* 显示当前文件夹下的所有隐藏文件
+
+ssh:远程访问其他的计算机
+  保持持续在线的三种方法:
+    1. 在服务器端的/etc/ssh/sshd_config文件中加入这两句话。
+        ClientAliveInterval 60
+        ClientAliveCountMax 1
+    2. 在客户端的/etc/ssh/ssh_config文件或者~/.ssh/ssh_config文件中加入这两句话
+        TCPKeepAlive yes
+        ServerAliveInterval 300
+    3. 在ssh命令中，ssh和远程计算机名称之间加入这两个命令
+        -o TCPKeepAlive=yes -o ServerAliveInterval=300
